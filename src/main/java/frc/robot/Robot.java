@@ -137,6 +137,7 @@ public class Robot extends TimedRobot {
     if (xbox.getXButton() == true) {
       if (x < 0) {
         double direction = ((Math.sqrt(15) * (Math.sqrt(x * -1) / 60))); // Test for a exponential turning speed. Nominally (x / 60)
+        if (direction < 0.1) direction = 0.1;
         double speed = (xbox.getY(Hand.kLeft) * 0.5);
         bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
         br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
