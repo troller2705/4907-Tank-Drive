@@ -38,6 +38,21 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  public static double turnLimiter(double direction) {
+    if (direction > 0.5) direction = 0.5;
+    if (direction < -0.5) direction = -0.5;
+    return direction;
+  }
+  public static double turnDecrease(double x) {
+    if (x > 15) return 30;
+    if (x < -15) return -30;
+    return x; 
+  }
+
+    
+  
+
+
   // private static PowerDistributionPanel pdp;
   private TalonSRX bl, br;
   private VictorSPX fl, fr;
@@ -133,35 +148,42 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double x = tx.getDouble(0.0);
     double y = ty.getDouble(0.0);
+    double invert = x < 0 ? -1 : 1;
     double area = ta.getDouble(0.0);
+    // double dirTest = xbox.getX(Hand.kRight);
+    // System.out.println(dirTest);
     if (xbox.getXButton() == true) {
-      if (x < 0) {
-        double direction = ((Math.sqrt(15) * (Math.sqrt(x * -1) / 60))); // Test for a exponential turning speed. Nominally (x / 60)
-        if (direction < 0.1) direction = 0.1;
+      // if (x < 0) {
+        double direction = ((turnDecrease(x) / 60) * -1);
+        direction = turnLimiter(direction);
+        //double direction = (((((Math.pow((x / 30), 2) / 4)) * invert) + (x / 120)) * -1);
+        // double direction = ((Math.sqrt(30) * (Math.sqrt(x * -1) / 60))); // Test for a exponential turning speed. Nominally (x / 60)
         double speed = (xbox.getY(Hand.kLeft) * 0.5);
+        System.out.println(direction);
         bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
         br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
       }
-      else {
-        double direction = ((Math.sqrt(30) * (Math.sqrt(x) / 60 * -1))); // Test for a exponential turning speed. Nominally (x / 60)
-        double speed = (xbox.getY(Hand.kLeft) * 0.5);
-        bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
-        br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
-      }
+      // else {
+      //   double direction  = ((((Math.pow((x / 30), 2) / 4)) + (x / 120)) * - 1);
+      //   // double direction = ((Math.sqrt(30) * (Math.sqrt(x) / 60 * -1))); // Test for a exponential turning speed. Nominally (x / 60)
+      //   double speed = (xbox.getY(Hand.kLeft) * 0.5);
+      //   bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
+      //   br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
+      
 
 
-    }
+    
     else {
       double speed = (xbox.getY(Hand.kLeft) * 0.5); 
       double direction = (xbox.getX(Hand.kRight) * -1 * 0.5);
-      if (direction > 0.05) {
-        bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
-        br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
-      }
-      else {
-        bl.set(TalonSRXControlMode.PercentOutput, (speed * 2)); // Allows full speed if not turning
-        br.set(TalonSRXControlMode.PercentOutput, ((speed * -1)* 2)); // nominally (speed) & (speed * -1)
-      }
+      // if () {
+      bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
+      br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
+      // }
+      // else {
+        // bl.set(TalonSRXControlMode.PercentOutput, (speed * 2)); // Allows full speed if not turning
+        // br.set(TalonSRXControlMode.PercentOutput, ((speed * -1)* 2)); // nominally (speed) & (speed * -1)
+      // }
     }
 
 
