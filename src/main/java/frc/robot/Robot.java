@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -56,8 +58,10 @@ public class Robot extends TimedRobot {
   // private static PowerDistributionPanel pdp;
   private TalonSRX bl, br;
   private VictorSPX fl, fr;
+  private TalonFX flywheel1, flywheel2;
   private static DriveTrain tankdrive;
   private XboxController xbox;
+  private Joystick joystick;
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry ty = table.getEntry("ty");
@@ -89,6 +93,21 @@ public class Robot extends TimedRobot {
     fr.follow(br);
     bl.configContinuousCurrentLimit(40);
     br.configContinuousCurrentLimit(40);
+
+    flywheel1 = new TalonFX(5);
+    flywheel2 = new TalonFX(6);
+    flywheel2.follow(flywheel1);
+
+    flywheel1.setInverted(true);
+    flywheel2.setInverted(false);
+
+    flywheel1.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+    flywheel2.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Coast);
+
+    // stop it
+    flywheel1.set(ControlMode.PercentOutput, 0.0);
+
+    joystick = new Joystick(1);
   }
 
   /**
@@ -180,15 +199,15 @@ public class Robot extends TimedRobot {
       bl.set(TalonSRXControlMode.PercentOutput, speed + direction);
       br.set(TalonSRXControlMode.PercentOutput, (speed * -1) + direction);
       // }
-      // else {
+      // else 
         // bl.set(TalonSRXControlMode.PercentOutput, (speed * 2)); // Allows full speed if not turning
         // br.set(TalonSRXControlMode.PercentOutput, ((speed * -1)* 2)); // nominally (speed) & (speed * -1)
       // }
     }
 
-
-
-
+    var throttleMinusOneToOne = -this.joystick.getThrottle(); // throttle axis is inverted
+    var throttle = (throttleMinusOneToOne + 1.0) * 0.5;
+    this.flywheel1.set(ControlMode.PercentOutput, throttle);
   }
 
   /**
