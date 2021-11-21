@@ -51,6 +51,16 @@ public class Robot extends TimedRobot {
     return x; 
   }
 
+  // public void setOneOfEightMotors(int canID) {
+  //   joystick = new Joystick(1);
+  //   var throttleMinusOneToOne = -joystick.getY();
+  //   var throttle = (throttleMinusOneToOne + 1.0) * 0.5;
+  //   .set(ControlMode.PercentOutput, throttle);
+
+
+
+  // }
+
     
   
 
@@ -58,7 +68,7 @@ public class Robot extends TimedRobot {
   // private static PowerDistributionPanel pdp;
   private TalonSRX bl, br;
   private VictorSPX fl, fr;
-  private TalonFX flywheel1, flywheel2;
+  private TalonFX flywheel1, flywheel2, flywheel3, flywheel4, flywheel5, flywheel6, flywheel7, flywheel8;
   private static DriveTrain tankdrive;
   private XboxController xbox;
   private Joystick joystick;
@@ -94,9 +104,17 @@ public class Robot extends TimedRobot {
     bl.configContinuousCurrentLimit(40);
     br.configContinuousCurrentLimit(40);
 
-    flywheel1 = new TalonFX(5);
-    flywheel2 = new TalonFX(6);
-    flywheel2.follow(flywheel1);
+    flywheel1 = new TalonFX(11);
+    flywheel2 = new TalonFX(12);
+    flywheel3 = new TalonFX(13);
+    flywheel4 = new TalonFX(14);
+
+    flywheel5 = new TalonFX(15);
+    flywheel6 = new TalonFX(16);
+    flywheel7 = new TalonFX(17);
+    flywheel8 = new TalonFX(18);
+
+    // flywheel2.follow(flywheel1);
 
     flywheel1.setInverted(true);
     flywheel2.setInverted(false);
@@ -205,9 +223,26 @@ public class Robot extends TimedRobot {
       // }
     }
 
-    var throttleMinusOneToOne = -this.joystick.getThrottle(); // throttle axis is inverted
-    var throttle = (throttleMinusOneToOne + 1.0) * 0.5;
-    this.flywheel1.set(ControlMode.PercentOutput, throttle);
+    // var throttleMinusOneToOne = -this.joystick.getThrottle(); // throttle axis is inverted
+    //var throttleMinusOneToOne = -this.joystick.getZ();
+    // System.out.println(throttleMinusOneToOne);
+    for (int f = 11; f < 19; f++) {
+      setOneOfEightMotors(f);
+    }
+    
+    // var throttle = ((throttleMinusOneToOne + 1.0) * 0.5 * -1);
+    // this.flywheel1.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel2.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel3.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel4.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel5.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel6.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel7.set(ControlMode.PercentOutput, throttle);
+    // this.flywheel8.set(ControlMode.PercentOutput, throttle);
+
+
+
+
   }
 
   /**
